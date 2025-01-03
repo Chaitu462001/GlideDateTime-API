@@ -1,0 +1,7 @@
+var ms = new GlideDateTime('2020-11-17 08:00:00');
+var chay = new GlideDateTime();
+if (chay == 6 || chay == 7) {
+    gs.print('weekend');
+} else {
+    gs.print('weekday');
+}
