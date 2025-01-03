@@ -1,0 +1,8 @@
+var ms = new GlideDateTime('2020-11-17 08:00:00');
+var chay = new GlideDateTime();//todays'date
+var diff = gs.dateDiff(ms,chay,true);//differenece between ms and chay
+if (diff >= 0 && diff <= 777600 ) { //9 days is converted into 777600 seconds 
+    gs.print('Within 9 days');
+} else {
+    gs.print('more than 9 days');
+}
