@@ -1,0 +1,35 @@
+SERVER SCRIPT :
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+
+    var ga = new GlideAjax('mftDateValidation');
+    ga.addParam('sysparm_name', 'manufacturdDateValidation');
+    ga.addParam('sysparam_mdate', newValue);
+    ga.getXMLAnswer(function(response) {
+        var result = response.responseXML.documentElement.getAttribute("answer");
+        if (result === 'false') {
+            g_form.clearValue('u_manufacturing_date');
+            g_form.showFieldMsg('u_manufacturing_date', 'The selected date should be within 10 days', 'error');
+        }
+    });
+}
+
+SCRIPT INCLUDE : 
+var mftDateValidation = Class.create();
+mftDateValidation.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+    manufacturdDateValidation: function() {
+        var selDate = new GlideDateTime(this.getParameter('sysparam_mdate'));
+        var today = new GlideDateTime();
+        var diff = selDate.getNumericValue() - today.getNumericValue();
+
+        if (diff >= 0 && diff <= 864000000) {
+            return 'true';
+        } else {
+            return 'false';
+        }
+    },
+
+    type: 'mftDateValidation'
+});
