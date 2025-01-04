@@ -1,0 +1,33 @@
+SCRIPT INCLUDE : 
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+    var ga = new GlideAjax('expDateCalculation');
+    ga.addParam('sysparm_name', 'expiryDateValidation');
+    ga.addParam('sysparam_sdate', newValue);
+    //ga.addParam('sysparm_view',parm);
+    ga.getXMLAnswer(populateValues);
+}
+
+function populateValues(response){
+	var answer = response.responseXML.documentElement.getAttribute("answer");
+	g_form.setValue('u_expiry_date',answer);
+}
+
+CLIENT SCRIPT : 
+var expDateCalculation = Class.create();
+expDateCalculation.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    expiryDateValidation: function() {
+        var ms = new GlideDateTime(this.getParameter('sysparm_sdate'));
+        var sa = new GlideDuration(10 * 24 * 60 * 60 * 1000);
+        var ch = new GlideSchedule();
+        var exDay = ch.add(ms, sa).getDisplayValue();
+
+        return exDay;
+
+    },
+
+    type: 'expDateCalculation'
+});
